@@ -4,3 +4,5 @@
   - array of Scalar
     - Scalar - number
     - Scalar function - method which return scalar
+## GRAD
+  - 0 = no effect 
