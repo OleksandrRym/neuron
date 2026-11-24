@@ -59,14 +59,32 @@ class Value():
     def __mul__(self, other):
         return Value(self.data * other.data,(self, other),"* ")
 
+def lol():
+    h=0.0001
+    a = Value(2, label='a')
+    b = Value(-3, label='b')
+    c = Value(10, label='c')
+    e = a * b;
+    e.label = 'e'
+    d = e + c;
+    d.label = 'd'
+    f = Value(-2, label='f')
+    L = d * f;  L.label = 'L'
+    L1 = L.data
+
+    a = Value(2+h, label='a')
+    b = Value(-3, label='b')
+    c = Value(10, label='c')
+    e = a * b;
+    e.label = 'e'
+    d = e + c;
+    d.label = 'd'
+    f = Value(-2, label='f')
+    L = d * f;
+    L.label = 'L'
+    L2 = L.data
+    print((L2-L1)/h)
+
 
 if __name__ == '__main__':
-    a = Value(2,label='a')
-    b = Value(-3,label='b')
-    c = Value(10,label='c')
-    e = a*b; e.label='e'
-    d = e+c; d.label='d'
-    f = Value(-2,label='f')
-    L = d*f ; L.label='L'
-    dot = draw_dot(L)
-    dot.render('graph', view=True)
+    lol()
