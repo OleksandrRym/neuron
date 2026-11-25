@@ -17,4 +17,9 @@ dL / dL =1
 
 ## Backpropagation (UA Метод навчання Багатошарового Перцептрону)
   - How change Veight for reduce forecast(ua прогнозу) error
-## inline gridient check 
+## Perceptron
+- easy form of neuron with value 0 or 1
+## Synapse
+- Weight between 2 neuron
+## tanh function
+- is an activation function that maps any real-valued input to the range (−1, 1).
