@@ -19,7 +19,6 @@ def trace(root):
     build(root)
     return nodes, edges
 
-
 def draw_dot(root):
     dot = Digraph(format='svg', graph_attr={'rankdir': 'LR'})  # LR = left to right
 
@@ -40,7 +39,6 @@ def draw_dot(root):
 
     return dot
 
-
 class Value():
 
     def __init__(self, data, _children=(), _op='',label=''):
@@ -49,41 +47,63 @@ class Value():
         self._prev = set(_children)
         self._op = _op
         self.label = label
+        self._backward = lambda:None
 
     def __repr__(self):
         return f"Value: {self.data}"
 
     def __add__(self, other):
-        return Value(self.data + other.data, (self, other),'+')
+        out = Value(self.data + other.data, (self, other),'+')
+        def backward():
+            self.grad = 1.0 * out.grad
+            other.grad = 1.0 * other.grad
+        out._backward = backward
+        return out
+
 
     def __mul__(self, other):
-        return Value(self.data * other.data,(self, other),"* ")
+        out = Value(self.data * other.data,(self, other),"* ")
+        def backward():
+           self.grad = 1.0 * out.grad
+           other.grad = 1.0 * other.grad
+        out._backward = backward
+        return out
+
+    def tanh(self):
+        x = self.data
+        t = (math.exp(2*x)-1)/(math.exp(2*x)+1)
+        out = Value(t,(self,), "tanh")
+
+        def backward():
+            self.grad = (1.0 - t **2) * out.grad
+        out._backward = backward
+        return out
+
+
+
 
 def lol():
-    h=0.0001
-    a = Value(2, label='a')
-    b = Value(-3, label='b')
-    c = Value(10, label='c')
-    e = a * b;
-    e.label = 'e'
-    d = e + c;
-    d.label = 'd'
-    f = Value(-2, label='f')
-    L = d * f;  L.label = 'L'
-    L1 = L.data
+    # inputs x1,x2
+    x1 = Value(2.0, label='x1')
+    x2 = Value(0.0, label='x2')
+    # weights w1,w2
+    w1 = Value(-3.0, label='w1')
+    w2 = Value(1.0, label='w2')
+    # bias of the neuron
+    b = Value(6.8813735870195432, label='b')
+    # x1*w1 + x2*w2 + b
+    x1w1 = x1 * w1;
+    x1w1.label = 'x1*w1'
+    x2w2 = x2 * w2;
+    x2w2.label = 'x2*w2'
+    x1w1x2w2 = x1w1 + x2w2;
+    x1w1x2w2.label = 'x1*w1 + x2*w2'
+    n = x1w1x2w2 + b;
+    n.label = 'n'
+    o = n.tanh();
+    o.label = 'o'
+    draw_dot(o)
 
-    a = Value(2+h, label='a')
-    b = Value(-3, label='b')
-    c = Value(10, label='c')
-    e = a * b;
-    e.label = 'e'
-    d = e + c;
-    d.label = 'd'
-    f = Value(-2, label='f')
-    L = d * f;
-    L.label = 'L'
-    L2 = L.data
-    print((L2-L1)/h)
 
 
 if __name__ == '__main__':
